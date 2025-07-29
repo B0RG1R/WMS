@@ -13,8 +13,13 @@ class Sale extends Model
     protected $fillable = [
         'invoice_number',
         'sale_date',
+<<<<<<< HEAD
         'total_amount',
         'customer_id', // hanya pakai customer_id
+=======
+        'customer_name',
+        'total_amount',
+>>>>>>> 82fdca1 (progres dashboard)
     ];
 
     public function items()
@@ -22,6 +27,7 @@ class Sale extends Model
         return $this->hasMany(SalesItem::class);
     }
 
+<<<<<<< HEAD
     public function customer()
     {
         return $this->belongsTo(Customer::class);
@@ -33,6 +39,8 @@ class Sale extends Model
     }
 
 
+=======
+>>>>>>> 82fdca1 (progres dashboard)
     public function finalizeStockMovement()
     {
         info('🔥 finalizeStockMovement DIPANGGIL SALE ID: ' . $this->id);

@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\DB;
+=======
+>>>>>>> 82fdca1 (progres dashboard)
 
 class SalesItem extends Model
 {
@@ -27,6 +30,7 @@ class SalesItem extends Model
         return $this->belongsTo(Product::class);
     }
 
+<<<<<<< HEAD
     protected static function booted()
     {
         static::created(function ($item) {
@@ -42,6 +46,23 @@ class SalesItem extends Model
                 $total = $sale->items()->sum(DB::raw('quantity * price'));
                 $sale->updateQuietly(['total_amount' => $total]);
             }
+=======
+    // Tambahkan ini untuk mengurangi stok saat item dibuat
+    protected static function booted()
+    {
+        static::created(function ($item) {
+            // Update stock
+            $product = \App\Models\Product::find($item->product_id);
+            if ($product && $product->stock >= $item->quantity) {
+                $product->stock -= $item->quantity;
+                $product->save();
+            }
+            // Update total amount sale
+            $sale = $item->sale;
+            $total = $sale->items()->sum(\DB::raw('quantity * price'));
+            $sale->total_amount = $total;
+            $sale->save();
+>>>>>>> 82fdca1 (progres dashboard)
         });
     }
 }
