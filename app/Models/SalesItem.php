@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 
 class SalesItem extends Model
 {
@@ -26,21 +27,21 @@ class SalesItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // Tambahkan ini untuk mengurangi stok saat item dibuat
     protected static function booted()
     {
         static::created(function ($item) {
-            // Update stock
-            $product = \App\Models\Product::find($item->product_id);
-            if ($product && $product->stock >= $item->quantity) {
-                $product->stock -= $item->quantity;
-                $product->save();
+            // Kurangi stok produk
+            $product = $item->product;
+            if ($product && $item->quantity > 0 && $product->stock >= $item->quantity) {
+                $product->decrement('stock', $item->quantity);
             }
-            // Update total amount sale
+
+            // Update total_amount di Sale
             $sale = $item->sale;
-            $total = $sale->items()->sum(\DB::raw('quantity * price'));
-            $sale->total_amount = $total;
-            $sale->save();
+            if ($sale) {
+                $total = $sale->items()->sum(DB::raw('quantity * price'));
+                $sale->updateQuietly(['total_amount' => $total]);
+            }
         });
     }
 }

@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SaleResource\Pages;
-use App\Filament\Resources\SaleResource\RelationManagers;
 use App\Models\Sale;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
@@ -22,8 +19,6 @@ class SaleResource extends Resource
     protected static ?string $model = Sale::class;
     protected static ?string $navigationGroup = 'Sales';
     protected static ?int $navigationSort = 20;
-
-
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -37,9 +32,39 @@ class SaleResource extends Resource
                 DatePicker::make('sale_date')
                     ->required(),
 
-                TextInput::make('customer_name')
+                Select::make('customer_id')
+                    ->label('Customer')
+                    ->relationship('customer', 'name')
+                    ->searchable()
                     ->required()
-                    ->maxLength(255),
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->required()
+                            ->label('Name'),
+
+                        TextInput::make('phone')
+                            ->label('Phone')
+                            ->required()
+                            ->unique('customers', 'phone'),
+
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->email()
+                            ->unique('customers', 'email'),
+
+                        TextInput::make('address')
+                            ->label('Address'),
+                    ])
+                    ->afterStateUpdated(function ($state, callable $set) {
+                        if ($state) {
+                            $customer = \App\Models\Customer::find($state);
+                            if ($customer) {
+                                $set('customer_name', $customer->name);
+                            }
+                        } else {
+                            $set('customer_name', null);
+                        }
+                    }),
 
                 Repeater::make('items')
                     ->relationship()
@@ -69,17 +94,14 @@ class SaleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_number')->label('Invoice'),
                 Tables\Columns\TextColumn::make('sale_date')->date()->label('Date'),
-                Tables\Columns\TextColumn::make('customer_name')->label('Customer'),
+                Tables\Columns\TextColumn::make('customer.name')->label('Customer'),
                 Tables\Columns\TextColumn::make('products')
                     ->label('Products')
                     ->getStateUsing(fn ($record) => $record->items->map(fn ($item) => $item->product->name ?? '-')->implode(', '))
                     ->limit(50),
                 Tables\Columns\TextColumn::make('total_amount')
-                ->label('Total')
-                ->money('IDR', true),
-            ])
-            ->filters([
-                //
+                    ->label('Total')
+                    ->money('IDR', true),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -93,9 +115,7 @@ class SaleResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

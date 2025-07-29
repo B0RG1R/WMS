@@ -14,8 +14,6 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Hidden;
-use Illuminate\Support\Collection;
 
 class ReceivingResource extends Resource
 {
@@ -36,18 +34,15 @@ class ReceivingResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         $purchase = Purchase::with('items.product')->find($state);
-
                         if ($purchase) {
-                            $items = collect($purchase->items)->map(function ($item) {
+                            $set('items', collect($purchase->items)->map(function ($item) {
                                 return [
-                                    'purchase_item_id' => $item->id,
                                     'product_name' => $item->product->name ?? '-',
                                     'ordered_qty' => $item->quantity,
                                     'received_qty' => $item->quantity,
+                                    'purchase_item_id' => $item->id,
                                 ];
-                            });
-
-                            $set('items', $items->toArray());
+                            })->toArray());
                         } else {
                             $set('items', []);
                         }
@@ -59,16 +54,13 @@ class ReceivingResource extends Resource
                     ->required(),
 
                 TextInput::make('received_by')
-                    ->label('Received By')
                     ->required()
                     ->maxLength(255),
 
                 Repeater::make('items')
                     ->label('Receiving Items')
+                    ->relationship()
                     ->schema([
-                        Hidden::make('purchase_item_id'),
-                        Hidden::make('product_name'),
-
                         TextInput::make('product_name')
                             ->label('Product')
                             ->disabled(),
@@ -81,6 +73,9 @@ class ReceivingResource extends Resource
                             ->label('Qty Received')
                             ->numeric()
                             ->required(),
+
+                        TextInput::make('purchase_item_id')
+                            ->hidden(),
                     ])
                     ->columns(3)
                     ->required(),

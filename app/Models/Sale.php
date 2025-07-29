@@ -13,13 +13,18 @@ class Sale extends Model
     protected $fillable = [
         'invoice_number',
         'sale_date',
-        'customer_name',
         'total_amount',
+        'customer_id', // hanya pakai customer_id
     ];
 
     public function items()
     {
         return $this->hasMany(SalesItem::class);
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
     }
 
     public function finalizeStockMovement()
