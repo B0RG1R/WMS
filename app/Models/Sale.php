@@ -27,6 +27,12 @@ class Sale extends Model
         return $this->belongsTo(Customer::class);
     }
 
+    public function delivery()
+    {
+        return $this->hasOne(Delivery::class);
+    }
+
+
     public function finalizeStockMovement()
     {
         info('🔥 finalizeStockMovement DIPANGGIL SALE ID: ' . $this->id);
