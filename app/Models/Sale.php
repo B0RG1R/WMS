@@ -15,8 +15,6 @@ class Sale extends Model
         'sale_date',
         'total_amount',
         'customer_id', // hanya pakai customer_id
-        'customer_name',
-        'total_amount',
     ];
 
     public function items()
@@ -28,18 +26,6 @@ class Sale extends Model
     {
         return $this->belongsTo(Customer::class);
     }
-
-    public function delivery()
-    {
-        return $this->hasOne(Delivery::class);
-    }
-
-    public function salesItems()
-    {
-        return $this->hasMany(\App\Models\SalesItem::class);
-    }
-
-
 
     public function finalizeStockMovement()
     {

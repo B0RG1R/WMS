@@ -31,7 +31,7 @@ class SalesItem extends Model
     {
         static::created(function ($item) {
             // Kurangi stok produk
-            $product = $item->product ?? \App\Models\Product::find($item->product_id);
+            $product = $item->product;
             if ($product && $item->quantity > 0 && $product->stock >= $item->quantity) {
                 $product->decrement('stock', $item->quantity);
             }
