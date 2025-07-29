@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\SalesItem;
 
 class Product extends Model
 {
@@ -30,6 +31,11 @@ class Product extends Model
     public function movements()
     {
         return $this->hasMany(StockMovement::class);
+    }
+
+    public function salesItems()
+    {
+        return $this->hasMany(SalesItem::class);
     }
 
 

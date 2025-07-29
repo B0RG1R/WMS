@@ -5,28 +5,40 @@ namespace App\Filament\Widgets;
 use App\Models\Product;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class LowStockProducts extends BaseWidget
 {
-    protected static ?string $heading = 'Perlu Restock';
-    protected int|string|array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
-    protected function getTableQuery(): Builder
+    protected int|string|array $columnSpan = 'full'; // biar melebar satu baris
+
+    protected function getTableQuery(): Builder|Relation|null
     {
         return Product::query()
-            ->whereColumn('stock', '<', 'minimum_stock');
+            ->whereColumn('stock', '<=', 'minimum_stock')
+            ->orderBy('stock', 'asc'); // biar stok terendah muncul dulu
     }
 
     protected function getTableColumns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('name')->label('Product Name')->searchable(),
-            Tables\Columns\TextColumn::make('stock')->label('Stock'),
-            Tables\Columns\TextColumn::make('minimum_stock')->label('Min Stock'),
-            Tables\Columns\TextColumn::make('category.name')->label('Category'),
-            Tables\Columns\TextColumn::make('price')->money('idr'),
+            TextColumn::make('name')
+                ->label('Produk')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('stock')
+                ->label('Stok Sekarang')
+                ->numeric()
+                ->color('danger'), // warna merah biar kesan urgent
+
+            TextColumn::make('minimum_stock')
+                ->label('Stok Minimum')
+                ->numeric()
+                ->color('gray'),
         ];
     }
 }

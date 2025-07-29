@@ -34,6 +34,11 @@ class Sale extends Model
         return $this->hasOne(Delivery::class);
     }
 
+    public function salesItems()
+    {
+        return $this->hasMany(\App\Models\SalesItem::class);
+    }
+
 
 
     public function finalizeStockMovement()
