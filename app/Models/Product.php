@@ -27,6 +27,12 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function movements()
+    {
+        return $this->hasMany(StockMovement::class);
+    }
+
+
     protected static function booted()
     {
         static::creating(function ($product) {

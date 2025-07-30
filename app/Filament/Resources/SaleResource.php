@@ -3,21 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SaleResource\Pages;
-<<<<<<< HEAD
-=======
 use App\Filament\Resources\SaleResource\RelationManagers;
->>>>>>> 82fdca1 (progres dashboard)
 use App\Models\Sale;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-<<<<<<< HEAD
-=======
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
->>>>>>> 82fdca1 (progres dashboard)
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Repeater;
@@ -28,11 +22,6 @@ class SaleResource extends Resource
     protected static ?string $model = Sale::class;
     protected static ?string $navigationGroup = 'Sales';
     protected static ?int $navigationSort = 20;
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 82fdca1 (progres dashboard)
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -46,7 +35,6 @@ class SaleResource extends Resource
                 DatePicker::make('sale_date')
                     ->required(),
 
-<<<<<<< HEAD
                 Select::make('customer_id')
                     ->label('Customer')
                     ->relationship('customer', 'name')
@@ -80,11 +68,6 @@ class SaleResource extends Resource
                             $set('customer_name', null);
                         }
                     }),
-=======
-                TextInput::make('customer_name')
-                    ->required()
-                    ->maxLength(255),
->>>>>>> 82fdca1 (progres dashboard)
 
                 Repeater::make('items')
                     ->relationship()
@@ -114,26 +97,17 @@ class SaleResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('invoice_number')->label('Invoice'),
                 Tables\Columns\TextColumn::make('sale_date')->date()->label('Date'),
-<<<<<<< HEAD
                 Tables\Columns\TextColumn::make('customer.name')->label('Customer'),
-=======
-                Tables\Columns\TextColumn::make('customer_name')->label('Customer'),
->>>>>>> 82fdca1 (progres dashboard)
                 Tables\Columns\TextColumn::make('products')
                     ->label('Products')
                     ->getStateUsing(fn ($record) => $record->items->map(fn ($item) => $item->product->name ?? '-')->implode(', '))
                     ->limit(50),
                 Tables\Columns\TextColumn::make('total_amount')
-<<<<<<< HEAD
                     ->label('Total')
                     ->money('IDR', true),
-=======
-                ->label('Total')
-                ->money('IDR', true),
             ])
             ->filters([
                 //
->>>>>>> 82fdca1 (progres dashboard)
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -147,13 +121,9 @@ class SaleResource extends Resource
 
     public static function getRelations(): array
     {
-<<<<<<< HEAD
-        return [];
-=======
         return [
             //
         ];
->>>>>>> 82fdca1 (progres dashboard)
     }
 
     public static function getPages(): array

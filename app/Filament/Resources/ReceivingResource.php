@@ -14,11 +14,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
-<<<<<<< HEAD
-=======
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Collection;
->>>>>>> 82fdca1 (progres dashboard)
 
 class ReceivingResource extends Resource
 {
@@ -39,17 +36,6 @@ class ReceivingResource extends Resource
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set) {
                         $purchase = Purchase::with('items.product')->find($state);
-<<<<<<< HEAD
-                        if ($purchase) {
-                            $set('items', collect($purchase->items)->map(function ($item) {
-                                return [
-                                    'product_name' => $item->product->name ?? '-',
-                                    'ordered_qty' => $item->quantity,
-                                    'received_qty' => $item->quantity,
-                                    'purchase_item_id' => $item->id,
-                                ];
-                            })->toArray());
-=======
 
                         if ($purchase) {
                             $items = collect($purchase->items)->map(function ($item) {
@@ -62,7 +48,6 @@ class ReceivingResource extends Resource
                             });
 
                             $set('items', $items->toArray());
->>>>>>> 82fdca1 (progres dashboard)
                         } else {
                             $set('items', []);
                         }
@@ -74,24 +59,16 @@ class ReceivingResource extends Resource
                     ->required(),
 
                 TextInput::make('received_by')
-<<<<<<< HEAD
-=======
                     ->label('Received By')
->>>>>>> 82fdca1 (progres dashboard)
                     ->required()
                     ->maxLength(255),
 
                 Repeater::make('items')
                     ->label('Receiving Items')
-<<<<<<< HEAD
-                    ->relationship()
-                    ->schema([
-=======
                     ->schema([
                         Hidden::make('purchase_item_id'),
                         Hidden::make('product_name'),
 
->>>>>>> 82fdca1 (progres dashboard)
                         TextInput::make('product_name')
                             ->label('Product')
                             ->disabled(),
@@ -104,12 +81,6 @@ class ReceivingResource extends Resource
                             ->label('Qty Received')
                             ->numeric()
                             ->required(),
-<<<<<<< HEAD
-
-                        TextInput::make('purchase_item_id')
-                            ->hidden(),
-=======
->>>>>>> 82fdca1 (progres dashboard)
                     ])
                     ->columns(3)
                     ->required(),
